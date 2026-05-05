@@ -18,16 +18,10 @@ pipeline {
 
         stage('Deploy') {
             steps {
-                echo 'Deploying Flask app container...'
-                sh '''
-                    set -e
-                    if docker ps -a --format '{{.Names}}' | grep -q '^flask-health-app-running$'; then
-                        docker rm -f flask-health-app-running || true
-                    fi
-                    docker run -d --name flask-health-app-running -p 5000:5000 flask-health-app
-                    sleep 3
-                    curl -f http://localhost:5000/health
-                '''
+                sh 'docker rm -f flask-health-app-running || true'
+                sh 'docker run -d --name flask-health-app-running -p 5000:5000 flask-health-app'
+                sh 'sleep 3'
+                sh 'curl -f http://localhost:5000/health'
             }
         }
     }
